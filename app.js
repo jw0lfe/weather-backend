@@ -1,6 +1,8 @@
 "use strict"
 
 const exp = require('constants')
+const { stringify } = require('querystring')
+const { isNullOrUndefined } = require('util')
 var express = require('express')
 var app = express()
 app.use(express.json())
@@ -8,10 +10,10 @@ app.use(express.json())
 app.listen(3000)
 console.log('Node.js Express server is running on port 3000...')
 
-app.get('/v1/weather', get_weather)
+app.get('/v1/weather', verifyToken, get_weather)//verify mock token and return weather
 
 function get_weather(request, response) {
-	response.json( 
+	response.status(200).json( 
 		{
 			"coord":
 				{
@@ -62,21 +64,43 @@ function get_weather(request, response) {
 		})
 }
 
-app.get('/v1/hello', get_hello)
+app.get('/v1/hello', verifyToken, get_hello) //verify mock token and return greeting
 
 function get_hello(request, response) {
 	response.json( {"greeting":"What a wonderful world... Get it? Hello World?"} )
 }
 
+//verify mock token
+function verifyToken(request, response, next) {
+	const bearerHeader = request.headers['authorization'];
+  
+	if (bearerHeader) {
+		const bearer = bearerHeader.split(' ');
+	  	const bearerToken = bearer[1];
+	  	request.token = bearerToken;
+		if (request.token == "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBc3NpZ25tZW50NSIsIm5hbWUiOiJKZW5uaWZlciIsImlhdCI6MTY0MzU5MjM4N30.OkoupwFtwS5goVbUXkxZqtQhD-ciW6CvYj53phlff4k")
+		{
+	  		next();
+		}
+		
+		else {	  
+			response.sendStatus(401)
+		}
+	}
+	else {	  
+		response.sendStatus(401)
+	}
+  }
+
 app.post('/v1/auth', post_token) //accept a username and password and return a mock tocken
 
 function post_token(request, response) {
-	var	username = request.body.username
-	var password = request.body.password
+	var	username = request.body.username;
+	var password = request.body.password;
 	
 	response.json( 
 		{
-			"access-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBc3NpZ25tZW50NCIsIm5hbWUiOiJKZW5uaWZlciIsImlhdCI6MTY0MzU5MjM4N30.hTf1kZkngcZj_umUM-tWZ3dZq9W8kpQyS7paQISE40M",
+			"access-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBc3NpZ25tZW50NSIsIm5hbWUiOiJKZW5uaWZlciIsImlhdCI6MTY0MzU5MjM4N30.OkoupwFtwS5goVbUXkxZqtQhD-ciW6CvYj53phlff4k",
 			"expires": "2022-02-15T08:00:00.000Z"
 		})
 }
