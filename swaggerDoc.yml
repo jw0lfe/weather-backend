@@ -1,0 +1,102 @@
+openapi: 3.0.1
+info:
+  title: 3 APIs
+  description: This is the description for 3 different endpoints
+  termsOfService: http://localhost:3000/v1
+  contact:
+    email: wolfej@oregonstate.edu
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: http://localhost:3000/v1 
+tags:
+- name: v1 
+  description: Testing 3 APIs
+paths:
+  /v1/weather:
+    get:
+      tags:
+      - v1
+      summary: Get details about the weather
+      description: Multiple details about the weather are returned
+      operationId: weather
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+        404:
+          description: weather not found
+          content: {}
+      security:
+      - api_key: []
+  /v1/hello:
+    get:
+      tags:
+      - v1
+      summary: Get a greeting
+      description: Nonsensical mumbo jumbo hello response sent with humor
+      operationId: hello
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+        404:
+          description: weather not found
+          content: {}
+      security:
+      - api_key: []
+  /v1/auth:
+    post:
+      tags:
+      - v1
+      summary: return a mock token
+      operationId: auth
+      parameters:
+      - name: username
+        in: query
+        description: The User Name for login
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: The password for login
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/auth'
+        404:
+          description: invalid command
+components:
+  schemas:
+    auth:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        token:
+          type: string
+        expiration:
+          type: string
+          format: date-time
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
