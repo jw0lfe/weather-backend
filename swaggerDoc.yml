@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: 3 APIs
   description: This is the description for 3 different endpoints
-  termsOfService: http://localhost:3000/v1
+  termsOfService: http://ec2-52-12-191-147.us-west-2.compute.amazonaws.com:8080/
   contact:
     email: wolfej@oregonstate.edu
   license:
@@ -10,7 +10,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-- url: http://localhost:3000/v1 
+- url: http://ec2-52-12-191-147.us-west-2.compute.amazonaws.com:8080/
 tags:
 - name: v1 
   description: Testing 3 APIs
@@ -22,6 +22,19 @@ paths:
       summary: Get details about the weather
       description: Multiple details about the weather are returned
       operationId: weather
+      parameters:
+      - name: username
+        in: query
+        description: The User Name for login
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: The password for login
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: successful operation
@@ -29,11 +42,11 @@ paths:
             application/json:
               schema:
                 type: object
-        404:
-          description: weather not found
+        401:
+          description: Unauthorized
           content: {}
       security:
-      - api_key: []
+      - bearerAuth: []
   /v1/hello:
     get:
       tags:
@@ -41,6 +54,19 @@ paths:
       summary: Get a greeting
       description: Nonsensical mumbo jumbo hello response sent with humor
       operationId: hello
+      parameters:
+      - name: username
+        in: query
+        description: The User Name for login
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: The password for login
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: successful operation
@@ -48,11 +74,11 @@ paths:
             application/json:
               schema:
                 type: object
-        404:
-          description: weather not found
+        401:
+          description: Unauthorized
           content: {}
       security:
-      - api_key: []
+      - bearerAuth: []
   /v1/auth:
     post:
       tags:
@@ -75,12 +101,22 @@ paths:
       responses:
         200:
           description: successful operation
+          headers:
+            accesstoken:
+              description: "returns a jwt"
+              schema:
+                type: "string"
+            expires:
+              description: "date in UTC when token expires"
+              schema:
+                type: "string"
+                format: "date-time"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth'
-        404:
-          description: invalid command
+        403:
+          description: Invalid user
 components:
   schemas:
     auth:
@@ -96,7 +132,9 @@ components:
           type: string
           format: date-time
   securitySchemes:
-    api_key:
-      type: apiKey
-      name: api_key
-      in: header
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+ - bearerAuth: []
