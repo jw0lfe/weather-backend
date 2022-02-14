@@ -97,14 +97,13 @@ function verifyToken(request, response, next) {
 	else {	  
 		response.status(401).send("Missing or invalid token")
 	}
-  }
+}
 
 app.post('/v1/auth', post_token) //accept a username and password and return a mock tocken
 
 function post_token(request, response) {
 	var	username = request.body.username;
 	var password = request.body.password;
-		
 	
 	const user = users.find(x => {return x.username == username && x.password == password})
 
