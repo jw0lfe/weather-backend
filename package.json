@@ -1,12 +1,7 @@
 {
   "dependencies": {
-<<<<<<< Updated upstream
-    "express": "^4.17.2"
-  }
-=======
     "cors": "^2.8.5",
-    "express": "^4.17.2",
-    "jsonwebtoken": "^8.5.1"
+    "express": "^4.17.2"
   },
   "name": "weather-backend",
   "version": "1.0.0",
@@ -26,5 +21,4 @@
   },
   "homepage": "https://github.com/jw0lfe/weather-backend#readme",
   "description": ""
->>>>>>> Stashed changes
 }
