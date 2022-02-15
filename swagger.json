@@ -1,0 +1,160 @@
+﻿{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "3 APIs",
+    "description": "This is the description for 3 different endpoints",
+    "termsOfService": "http://ec2-52-12-191-147.us-west-2.compute.amazonaws.com:3000",
+    "contact": {
+      "email": "wolfej@oregonstate.edu"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://ec2-52-12-191-147.us-west-2.compute.amazonaws.com:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "v1",
+      "description": "Testing 3 APIs"
+    }
+  ],
+  "paths": {
+    "/v1/weather": {
+      "get": {
+        "tags": [
+          "v1"
+        ],
+        "summary": "Get details about the weather",
+        "description": "Multiple details about the weather are returned",
+        "operationId": "weather",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid token",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/hello": {
+      "get": {
+        "tags": [
+          "v1"
+        ],
+        "summary": "Get a greeting",
+        "description": "Nonsensical mumbo jumbo hello response sent with humor",
+        "operationId": "hello",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid token",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/auth": {
+      "post": {
+        "tags": [
+          "v1"
+        ],
+        "summary": "return a mock token",
+        "operationId": "auth",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "example": {
+                  "username": "joe",
+                  "password": "secretpassword"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/auth"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid user"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "auth": {
+        "type": "object",
+        "properties": {
+          "access-token": {
+            "type": "string"
+          },
+          "expires": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -6,6 +6,6 @@ services:
       - D:\School\Github\weather-backend:/code
     environment:
       - USER=jen
-    command: bash -c "apt-get update && apt-get install nodejs && apt-get install npm && npm install express --save"
+    #command: bash -c "apt-get update && apt-get install nodejs && apt-get install npm && npm install express --save"
     #  && node code/app.js"
     

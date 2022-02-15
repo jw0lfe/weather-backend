@@ -1,14 +1,28 @@
 "use strict"
 
 const exp = require('constants')
-const { stringify } = require('querystring')
-const { isNullOrUndefined } = require('util')
+const cors = require('cors');
 var express = require('express')
 var app = express()
 app.use(express.json())
+app.use(cors())
+const swaggerUi = require('swagger-ui-express');
+// const YAML = require('yamljs');
+
+const swaggerDocument = require('./swagger.json')
+
+const users = [
+	{
+		"username": "jabob",
+		"password": "D0nChaKn0w"
+	}
+]
 
 app.listen(3000)
 console.log('Node.js Express server is running on port 3000...')
+
+
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/v1/weather', verifyToken, get_weather)//verify mock token and return weather
 
@@ -84,13 +98,13 @@ function verifyToken(request, response, next) {
 		}
 		
 		else {	  
-			response.sendStatus(401)
+			response.status(401).send("Missing or invalid token")
 		}
 	}
 	else {	  
-		response.sendStatus(401)
+		response.status(401).send("Missing or invalid token")
 	}
-  }
+}
 
 app.post('/v1/auth', post_token) //accept a username and password and return a mock tocken
 
@@ -98,9 +112,19 @@ function post_token(request, response) {
 	var	username = request.body.username;
 	var password = request.body.password;
 	
-	response.json( 
+	const user = users.find(x => {return x.username == username && x.password == password})
+
+	if (user)
+	{	
+		response.json( 
 		{
 			"access-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBc3NpZ25tZW50NSIsIm5hbWUiOiJKZW5uaWZlciIsImlhdCI6MTY0MzU5MjM4N30.OkoupwFtwS5goVbUXkxZqtQhD-ciW6CvYj53phlff4k",
 			"expires": "2022-02-15T08:00:00.000Z"
 		})
+
+	}
+	else
+	{
+		response.status(403).send("Invalid user")
+	}
 }
