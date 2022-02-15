@@ -6,6 +6,10 @@ var express = require('express')
 var app = express()
 app.use(express.json())
 app.use(cors())
+const swaggerUi = require('swagger-ui-express');
+// const YAML = require('yamljs');
+
+const swaggerDocument = require('./swagger.json')
 
 const users = [
 	{
@@ -16,6 +20,9 @@ const users = [
 
 app.listen(3000)
 console.log('Node.js Express server is running on port 3000...')
+
+
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/v1/weather', verifyToken, get_weather)//verify mock token and return weather
 
